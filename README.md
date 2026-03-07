@@ -2,13 +2,13 @@
 
 Predicting monthly stock returns using **momentum**, **volatility**, and **P/E ratio** as features.
 
-Built entirely in **pure numpy** — no PyTorch, no sklearn for the core model. Every forward pass, backpropagation step, and weight update is implemented from first principles.
+Built entirely in **pure numpy**. I used no PyTorch, no sklearn for the core model. Every forward pass, backpropagation step, and weight update is implemented from first principles.
 
 ---
 
 ## Motivation
 
-Most neural network tutorials use MNIST or toy datasets. This project applies the same mathematical machinery to a real problem in quantitative finance — cross-sectional return prediction — where the data is noisy, the signal is weak, and honest evaluation matters as much as implementation.
+Most neural network tutorials use MNIST or toy datasets. This project applies the same mathematical machinery to a real problem in quantitative finance — cross-sectional return prediction, where the data is noisy, the signal is weak, and honest evaluation matters as much as implementation.
 
 ---
 
@@ -123,7 +123,7 @@ We use **He initialisation** rather than small random values:
 
 $$W_i \sim \mathcal{N}\left(0,\ \sqrt{\frac{2}{n_{\text{in}}}}\right)$$
 
-**Why:** With multiple ReLU layers, naive small random initialisation causes the variance of activations to shrink layer by layer — gradients vanish before reaching early layers. He initialisation keeps variance stable by accounting for the fact that ReLU kills roughly half the neurons.
+**Why:** With multiple ReLU layers, naive small random initialisation causes the variance of activations to shrink layer by layer, gradients vanish before reaching early layers. He initialisation keeps variance stable by accounting for the fact that ReLU kills roughly half the neurons.
 
 ---
 
@@ -147,7 +147,7 @@ t=0                       t=T*0.8           t=T
 | P/E Ratio | Trailing price / earnings | Basu (1977) |
 | **Target y** | Forward 1-month return | — |
 
-All features normalised to zero mean and unit variance before training. Target $y$ is **not** normalised — we want actual return predictions.
+All features normalised to zero mean and unit variance before training. Target $y$ is **not** normalised. We want actual return predictions.
 
 ---
 
