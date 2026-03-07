@@ -8,7 +8,7 @@ Built entirely in **pure numpy**. I used no PyTorch, no sklearn for the core mod
 
 ## Motivation
 
-Most neural network tutorials use MNIST or toy datasets. This project applies the same mathematical machinery to a real problem in quantitative finance — cross-sectional return prediction, where the data is noisy, the signal is weak, and honest evaluation matters as much as implementation.
+Most neural network tutorials use MNIST or toy datasets. This project applies the same mathematical machinery to a real problem in quantitative finance. Cross-sectional return prediction, where the data is noisy, the signal is weak, and honest evaluation matters as much as implementation.
 
 ---
 
