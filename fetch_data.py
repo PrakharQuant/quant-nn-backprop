@@ -45,15 +45,8 @@ OUT_FILE = os.path.join(OUT_DIR, "features.csv")
 # ══════════════════════════════════════════════════════════════════════════════
 # REAL DATA — yfinance
 # ══════════════════════════════════════════════════════════════════════════════
-
 def fetch_real_data():
-    """
-    Downloads monthly price data for each ticker.
-    Engineers momentum, volatility, PE ratio.
-    Returns a clean DataFrame.
-    """
     print(f"Fetching data for {len(TICKERS)} tickers from {START} to {END}...")
-
     all_rows = []
 
     for ticker in TICKERS:
@@ -61,52 +54,45 @@ def fetch_real_data():
         try:
             stock = yf.Ticker(ticker)
 
-            # ── Monthly adjusted close prices ──────────────────────────────
-            hist = stock.history(start=START, end=END, interval="1mo")
-            if hist.empty or len(hist) < 15:
-                print(f"    Skipping {ticker} — insufficient data")
+            # Download daily then resample to monthly
+            hist = stock.history(start=START, end=END, interval="1d")
+            if hist.empty:
+                print(f"    Skipping {ticker} — no data")
                 continue
 
-            hist = hist[["Close"]].copy()
-            hist.index = pd.to_datetime(hist.index).tz_localize(None)
+            hist = hist[["Close"]].resample("ME").last()
+            hist.index = pd.to_datetime(hist.index).tz_convert(None)
 
-            # ── Monthly returns ────────────────────────────────────────────
+            # Monthly returns
             hist["ret"] = hist["Close"].pct_change()
 
-            # ── Feature 1: Momentum (12-month trailing return, skip last) ──
-            # Standard academic momentum: t-12 to t-1 (skip most recent month)
-            hist["momentum"] = (
-                hist["Close"].shift(1) / hist["Close"].shift(13) - 1
-            )
+            # Momentum: 12-1 month
+            hist["momentum"] = hist["Close"].shift(1) / hist["Close"].shift(13) - 1
 
-            # ── Feature 2: Volatility (12-month rolling std of returns) ────
+            # Volatility: 12-month rolling std
             hist["volatility"] = hist["ret"].rolling(12).std()
 
-            # ── Feature 3: PE Ratio ────────────────────────────────────────
-            # yfinance gives current PE — we use it as a constant per ticker
-            # (historical PE requires premium data sources)
+            # PE ratio — current as proxy
             try:
-                pe = stock.fast_info.get("trailingPE", np.nan)
+                pe = stock.fast_info.get("trailingPE", 28.0)
             except Exception:
-                pe = np.nan
+                pe = 28.0
             hist["pe_ratio"] = pe
 
-            # ── Target: Forward 1-month return ────────────────────────────
+            # Target: forward 1-month return
             hist["target"] = hist["ret"].shift(-1)
 
-            # ── Add ticker label ───────────────────────────────────────────
             hist["ticker"] = ticker
             all_rows.append(hist)
 
         except Exception as e:
-            print(f"    Error fetching {ticker}: {e}")
+            print(f"    Error: {e}")
             continue
 
     if not all_rows:
-        raise ValueError("No data fetched — check your internet connection.")
+        raise ValueError("No data fetched.")
 
-    df = pd.concat(all_rows)
-    return df
+    return pd.concat(all_rows)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
