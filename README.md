@@ -161,6 +161,8 @@ What this project validates:
 - Loss decreases monotonically across epochs
 - Gradient norms remain healthy (no vanishing/exploding)
 
+Dataset covers 10 large-cap US equities from 2015–2024 (~1080 monthly observations). A production model would require broader cross-sectional coverage across the full market universe to avoid survivorship bias.
+
 ---
 
 ## Project Structure
