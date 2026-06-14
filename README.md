@@ -107,7 +107,7 @@ $$\frac{\partial L}{\partial W_1} = X^\top \cdot \frac{\partial L}{\partial Z_1}
 
 ---
 
-### 4. Weight Update — Gradient Descent
+### 4. Weight Update: Gradient Descent
 
 $$W_i \leftarrow W_i - \alpha \cdot \frac{\partial L}{\partial W_i}$$
 
@@ -117,7 +117,7 @@ where $\alpha$ is the learning rate. We use mini-batch gradient descent with bat
 
 ---
 
-### 5. Weight Initialisation — He Initialisation
+### 5. Weight Initialisation: He Initialisation (also known as Kaiming initialization)
 
 We use **He initialisation** rather than small random values:
 
